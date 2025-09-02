@@ -5,6 +5,7 @@ import 'package:woof/pages/dw/avaliacoes.dart';
 import 'package:woof/pages/dw/cadastro_dw.dart';
 import 'package:woof/direcionamento.dart';
 import 'package:woof/pages/dw/calendario.dart';
+import 'package:woof/pages/dw/editar_perfildw.dart';
 import 'package:woof/pages/dw/experiencias.dart';
 import 'package:woof/pages/dw/financias.dart';
 import 'package:woof/pages/dw/historico.dart';
@@ -19,6 +20,7 @@ import 'package:woof/pages/tutor/cadastro_tutor.dart';
 import 'package:woof/pages/tutor/cd_perfil.dart';
 import 'package:woof/pages/tutor/editar_perfil.dart';
 import 'package:woof/pages/tutor/home.dart';
+import 'package:woof/pages/tutor/home_tutor1.dart';
 import 'package:woof/pages/tutor/perfil_tutor.dart';
 
 void main() async {
@@ -48,12 +50,15 @@ void main() async {
       '/financas': (context) => FinancasScreen(),
       '/notificacoes': (context) => notificacoesScreen(),
       '/historico_calendario': (context) => CalendarioHistoricoWidget(),
+      '/editar_perfildw': (context) => EditarPerfilDwScreen(),
       '/cadastro_tutor': (context) => Cadastro_tutorPage(),
       '/cadastro_pet': (context) => CadastroPetScreen (),
       '/perfil_tutor': (context) => PerfilTutorScreen (),
-      '/editar_perfil': (context) => EditarPerfilScreen(),
-      '/home_tutor': (context) => HomeTutorpetScreen (),
-      '/perfil': (context) => PerfilTutorWidget (),
+      '/editar_perfiltutor': (context) => EditarPerfilScreen(),
+      '/visor_perfiltutor': (context) => PerfilTutorWidget (),
+      '/home_tutor': (context) => HomeTutorpetWidget (),
+      '/home_tutor1': (context) => HomeTutorpetScreen (),
+      
                 },
   ));
 }

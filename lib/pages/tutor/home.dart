@@ -1,180 +1,145 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class HomeTutorpetScreen extends StatefulWidget {
-  const HomeTutorpetScreen({super.key});
+class HomeTutorpetWidget extends StatefulWidget {
+  const HomeTutorpetWidget({super.key});
 
   @override
-  State<HomeTutorpetScreen> createState() => _HomeTutorpetScreenState();
+  State<HomeTutorpetWidget> createState() => _HomeTutorpetWidgetState();
 }
 
-class _HomeTutorpetScreenState extends State<HomeTutorpetScreen> {
+class _HomeTutorpetWidgetState extends State<HomeTutorpetWidget> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFFFFBE4),
-      appBar: AppBar(
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
+        key: scaffoldKey,
         backgroundColor: const Color(0xFFFFFBE4),
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.person, color: Color(0xFF074800)),
-          onPressed: () {
-            // Ação do botão de perfil
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_active_rounded, color: Color(0xFF074800)),
+        appBar: AppBar(
+          backgroundColor: const Color(0xFFB1F3A3),
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+            icon: const Icon(Icons.account_circle, color: Color(0xFF074800)),
             onPressed: () {
-              // Ação do botão de notificação
+              // Ação de perfil
             },
           ),
-        ],
-        title: Text(
-          'Olá, Gabriel',
-          style: GoogleFonts.interTight(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-            color: const Color(0xFF074800),
+          title: Text(
+            'Home',
+            style: GoogleFonts.interTight(
+              color: const Color(0xFF074800),
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.0,
+            ),
+          ),
+          centerTitle: true,
+          elevation: 0,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.notifications_active, color: Color(0xFF074800)),
+              onPressed: () {
+                // Ação de notificações
+              },
+            ),
+          ],
+        ),
+        body: SafeArea(
+          top: true,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const SizedBox(height: 28),
+                _buildDogWalkerCard(),
+                _buildDogWalkerCard(),
+                _buildDogWalkerCard(),
+              ],
+            ),
           ),
         ),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              // Card de resumo semanal
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFFFFF),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Resumo Semanal',
+    );
+  }
+
+  Widget _buildDogWalkerCard() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: Container(
+        width: double.infinity,
+        height: 150,
+        decoration: BoxDecoration(
+          color: const Color(0xFFFF9238),
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Row(
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(left: 15),
+              child: Icon(Icons.location_history, color: Colors.white, size: 90),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Nome do dogwalker',
+                      style: GoogleFonts.inter(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      'Descrição do dogwalker',
+                      style: GoogleFonts.inter(
+                        color: Colors.white,
+                        fontSize: 15,
+                      ),
+                    ),
+                    Text(
+                      'Valor: 00,00',
+                      style: GoogleFonts.inter(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          print('Botão Visualizar pressionado');
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF0F5100),
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                        ),
+                        child: Text(
+                          'Visualizar',
                           style: GoogleFonts.interTight(
-                            fontSize: 16,
+                            color: Colors.white,
                             fontWeight: FontWeight.w500,
-                            color: const Color(0xFF074800),
                           ),
                         ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            Text(
-                              'Passeios',
-                              style: GoogleFonts.inter(
-                                fontSize: 14,
-                                color: const Color(0xFF989898),
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              '10',
-                              style: GoogleFonts.interTight(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: const Color(0xFF074800),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            Text(
-                              'Ganhos',
-                              style: GoogleFonts.inter(
-                                fontSize: 14,
-                                color: const Color(0xFF989898),
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              'R\$ 250,00',
-                              style: GoogleFonts.interTight(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: const Color(0xFF074800),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
-              // Card de agendamento de passeio
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFB1F3A3),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Icon(Icons.calendar_today_rounded, color: Color(0xFF074800), size: 40),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Agende um passeio',
-                                style: GoogleFonts.interTight(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: const Color(0xFF074800),
-                                ),
-                              ),
-                              Text(
-                                'Agende um passeio com o tutorpet.',
-                                style: GoogleFonts.interTight(
-                                  fontSize: 14,
-                                  color: const Color(0xFF074800),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            // Ação do botão de agendar
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF44BB33),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          ),
-                          child: Text(
-                            'Agendar',
-                            style: GoogleFonts.interTight(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

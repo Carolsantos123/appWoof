@@ -231,7 +231,7 @@ class _Cadastro_tutorPageState extends State<Cadastro_tutorPage> {
                         elevation: 0,
                       ),
                       onPressed: () {
-                        Navigator.of(context).pushNamed('/perfil');
+                        Navigator.of(context).pushNamed('/visor_perfiltutor');
                       },
                       child: const Text(
                         'Cadastrar',

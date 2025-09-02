@@ -207,7 +207,7 @@ class _PerfilTutorWidgetState extends State<PerfilTutorWidget> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pushNamed('/home');
+                    Navigator.of(context).pushNamed('/home_tutor1');
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF199700),

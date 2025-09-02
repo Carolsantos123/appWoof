@@ -215,6 +215,7 @@ class _CadastroPetScreenState extends State<CadastroPetScreen> {
                     ),
                   ),
                   const SizedBox(height: 24),
+                  // Botão Cadastrar
                   SizedBox(
                     height: 44.2,
                     child: FilledButton(
@@ -231,6 +232,28 @@ class _CadastroPetScreenState extends State<CadastroPetScreen> {
                       },
                       child: const Text(
                         'Cadastrar',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // Botão Adicionar Outro Pet
+                  SizedBox(
+                    height: 44.2,
+                    child: FilledButton(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: const Color(0xFF074800),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(22),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        elevation: 0,
+                      ),
+                      onPressed: () {
+                        // Ação para adicionar outro pet (pode limpar os campos ou abrir nova tela)
+                      },
+                      child: const Text(
+                        'Adicionar Outro Pet',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),

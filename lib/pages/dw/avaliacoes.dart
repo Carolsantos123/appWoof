@@ -15,7 +15,7 @@ class _AvaliacoesScreenState extends State<AvaliacoesScreen> {
   // A cor principal usada para textos e ícones
   final Color primaryColor = const Color(0xFF074800);
   // A cor do fundo da AppBar
-  final Color appBarColor = const Color(0xFFB1F3A3);
+  final Color appBarColor = const Color.fromARGB(255, 177, 243, 163);
   // A cor de fundo dos cards de feedback
   final Color feedbackCardColor = const Color(0xFFFFEFB5);
   // A cor de destaque para o texto e ícones
