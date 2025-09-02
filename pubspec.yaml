@@ -1,0 +1,31 @@
+name: woof
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.6.1 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  flutter_rating_bar: ^4.0.1 # ou a versão mais recente
+  firebase_core: ^3.2.0 # Ajustei a versão para ser compatível com as mais recentes do Flutter
+  google_fonts: ^6.3.0
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.2
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/

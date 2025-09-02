@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "418095190519",
+    "firebase_url": "https://doglife-6acad-default-rtdb.firebaseio.com",
+    "project_id": "doglife-6acad",
+    "storage_bucket": "doglife-6acad.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:418095190519:android:c9c49c8b99c8c98b161ef2",
+        "android_client_info": {
+          "package_name": "br.com.woofdoglife.woof"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzFxJhZqauHCj9l1nOsMnOb9xScpxMB-E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
