@@ -45,7 +45,7 @@ class EditarPerfilScreen extends StatelessWidget {
                       width: 120,
                       height: 120,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFD9D9D9),
+                        color: const Color.fromARGB(255, 255, 255, 255),
                         borderRadius: BorderRadius.circular(60),
                       ),
                     ),
@@ -98,7 +98,7 @@ class EditarPerfilScreen extends StatelessWidget {
           label,
           style: TextStyle(
             fontSize: 12,
-            color: const Color.fromARGB(255, 255, 255, 255),
+            color: const Color.fromARGB(255, 196, 240, 161),
           ),
         ),
         const SizedBox(height: 4),
@@ -111,7 +111,7 @@ class EditarPerfilScreen extends StatelessWidget {
               color: const Color(0xFF074800),
             ),
             filled: true,
-            fillColor: Colors.white, // Padronizado com PerfilTutorWidget
+            fillColor: const Color.fromARGB(255, 255, 255, 255), // Padronizado com PerfilTutorWidget
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),

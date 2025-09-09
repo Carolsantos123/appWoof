@@ -12,7 +12,6 @@ class _ExperienciasScreenState extends State<ExperienciasScreen> {
   final TextEditingController textController1 = TextEditingController();
   final TextEditingController textController2 = TextEditingController();
   final TextEditingController textController3 = TextEditingController();
-  final TextEditingController priceController = TextEditingController();
   final TextEditingController textController4 = TextEditingController();
 
   @override
@@ -21,7 +20,6 @@ class _ExperienciasScreenState extends State<ExperienciasScreen> {
     textController1.dispose();
     textController2.dispose();
     textController3.dispose();
-    priceController.dispose();
     textController4.dispose();
     super.dispose();
   }
@@ -120,14 +118,6 @@ class _ExperienciasScreenState extends State<ExperienciasScreen> {
                     label: 'Regiões onde pode fazer passeios:',
                     controller: textController3,
                     maxLines: null,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                  child: _campo(
-                    label: 'Valor do passeio por hora (R\$):',
-                    controller: priceController,
-                    keyboardType: TextInputType.number,
                   ),
                 ),
                 Padding(

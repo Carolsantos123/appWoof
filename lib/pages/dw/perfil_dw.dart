@@ -28,9 +28,9 @@ class _PerfilDwScreenState extends State<PerfilDwScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
+                      const Text(
                         'Perfil',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Color(0xFF0F5100),
                           fontSize: 40,
                         ),
@@ -65,7 +65,7 @@ class _PerfilDwScreenState extends State<PerfilDwScreen> {
                     alignment: const AlignmentDirectional(0, 0),
                   ),
                 ),
-                // Botão para adicionar foto, mantendo a consistência de estilo
+                // Botão para adicionar foto
                 Padding(
                   padding: const EdgeInsets.only(top: 10),
                   child: SizedBox(
@@ -109,9 +109,9 @@ class _PerfilDwScreenState extends State<PerfilDwScreen> {
                         alignment: const AlignmentDirectional(0, -1),
                         child: Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
-                          child: Text(
+                          child: const Text(
                             'Nome do DW',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w500,
                             ),
@@ -120,43 +120,6 @@ class _PerfilDwScreenState extends State<PerfilDwScreen> {
                       ),
                     ),
                   ],
-                ),
-                // Botão "Editar informações básicas"
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 16),
-                  child: Container(
-                    width: 400,
-                    height: 95,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFB1F3A3),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(20, 0, 0, 0),
-                          child: Text(
-                            'Editar informações básicas',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            Navigator.of(context).pushNamed('/cadastro_dw'); 
-                          },
-                          icon: const Icon(
-                            Icons.arrow_forward_ios_rounded,
-                            size: 24,
-                            color: Color(0xFFFF9500),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                 ),
                 // Botão "Adicionar experiências"
                 Padding(
@@ -227,4 +190,3 @@ class _PerfilDwScreenState extends State<PerfilDwScreen> {
     );
   }
 }
-

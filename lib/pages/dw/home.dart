@@ -51,20 +51,16 @@ class _HomeScreenState extends State<HomeScreen> {
                             fontSize: 18,
                           ),
                         ),
-                        const SizedBox(height: 8), // Espaçamento entre o texto e o ícone
-                        InkWell( // Usamos InkWell para tornar o ícone clicável
-                          onTap: () {
-                            Navigator.pushNamed(context, '/perfil');
-                          },
-                          borderRadius: BorderRadius.circular(20), // Para o efeito de toque
-                          child: const Padding(
-                            padding: EdgeInsets.all(4.0), // Padding para área de toque
-                            child: Icon(
-                              Icons.account_circle,
-                              color: Color(0xFF0F5100),
-                              size: 40,
-                            ),
+                        const SizedBox(height: 8),
+                        IconButton(
+                          icon: const Icon(
+                            Icons.account_circle,
+                            color: Color(0xFF0F5100),
+                            size: 40,
                           ),
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/perfildw_home');
+                          },
                         ),
                       ],
                     ),
@@ -101,8 +97,8 @@ class _HomeScreenState extends State<HomeScreen> {
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Wrap(
-                  spacing: 16, // espaço horizontal
-                  runSpacing: 16, // espaço vertical
+                  spacing: 16,
+                  runSpacing: 16,
                   children: [
                     _buildButton(Icons.calendar_month_sharp, 'Agenda', onTap: () {
                       Navigator.pushNamed(context, '/agenda');
@@ -138,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
       child: Container(
-        width: (MediaQuery.of(context).size.width - 48) / 2, // 2 colunas
+        width: (MediaQuery.of(context).size.width - 48) / 2,
         height: 150,
         decoration: BoxDecoration(
           color: const Color(0xFFB1F3A3),

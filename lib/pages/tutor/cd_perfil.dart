@@ -193,7 +193,7 @@ class _PerfilTutorWidgetState extends State<PerfilTutorWidget> {
                         ),
                         IconButton(
                           onPressed: () {
-                            Navigator.of(context).pushNamed('/editar_perfil');
+                            Navigator.of(context).pushNamed('/editar_perfiltutor');
                           },
                           icon: const Icon(
                             Icons.arrow_forward_ios_rounded,
@@ -207,7 +207,7 @@ class _PerfilTutorWidgetState extends State<PerfilTutorWidget> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pushNamed('/home_tutor1');
+                    Navigator.of(context).pushNamed('/home_tutor');
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF199700),
