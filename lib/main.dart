@@ -20,8 +20,11 @@ import 'package:woof/pages/tutor/cadastro_pet.dart';
 import 'package:woof/pages/tutor/cadastro_tutor.dart';
 import 'package:woof/pages/tutor/cd_perfil.dart';
 import 'package:woof/pages/tutor/editar_perfil.dart';
+import 'package:woof/pages/tutor/feedback_tutor.dart';
 import 'package:woof/pages/tutor/home.dart';
-import 'package:woof/pages/tutor/home_tutor1.dart';
+import 'package:woof/pages/tutor/notifica%C3%A7%C3%A3o_tutor.dart';
+import 'package:woof/pages/tutor/pefil_pet.dart';
+import 'package:woof/pages/tutor/perfil_dw.dart';
 import 'package:woof/pages/tutor/perfil_tutor.dart';
 
 void main() async {
@@ -59,8 +62,11 @@ void main() async {
       '/editar_perfiltutor': (context) => EditarPerfilScreen(),
       '/visor_perfiltutor': (context) => PerfilTutorWidget (),
       '/home_tutor': (context) => HomeTutorScreen (),
-      '/home_tutor1': (context) => HomeTutorpetScreen (),
-      
+      '/perfildw_tutor': (context) => PerfilDw_tutorScreen (),
+      '/notificacoes_tutor': (context) => Notificacoes_tutorScreen (),
+      '/perfil_pet': (context) => PerfilPetScreen (), 
+      '/feedback_tutor': (context) => Feedback_tutorScreen (),
+      // '/historico_tutor': (context) => HistoricoTutorScreen (),     
                 },
   ));
 }

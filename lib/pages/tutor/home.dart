@@ -16,7 +16,7 @@ class HomeTutorScreen extends StatelessWidget {
               // APP BAR CUSTOMIZADA
               Container(
                 width: double.infinity,
-                height: 170,
+                height: 100,
                 decoration: const BoxDecoration(
                   color: Color(0xFFFF9500),
                   borderRadius: BorderRadius.only(
@@ -38,7 +38,7 @@ class HomeTutorScreen extends StatelessWidget {
                             '22º C',
                             style: GoogleFonts.inter(
                               color: Colors.white,
-                              fontSize: 28,
+                              fontSize: 25,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -46,7 +46,7 @@ class HomeTutorScreen extends StatelessWidget {
                             'nublado',
                             style: GoogleFonts.inter(
                               color: Colors.white,
-                              fontSize: 18,
+                              fontSize: 16,
                             ),
                           ),
                         ],
@@ -57,19 +57,18 @@ class HomeTutorScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            '20',
+                            '20/06/2024',
                             style: GoogleFonts.interTight(
                               color: Colors.white,
-                              fontSize: 45,
+                              fontSize: 25,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
-                            '04',
-                            style: GoogleFonts.interTight(
+                            'quinta-feira',
+                            style: GoogleFonts.inter(
                               color: Colors.white,
-                              fontSize: 45,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
                             ),
                           ),
                         ],
@@ -81,34 +80,34 @@ class HomeTutorScreen extends StatelessWidget {
 
               const SizedBox(height: 16),
 
-              // BOTÕES PRINCIPAIS
+              // BOTÕES PRINCIPAIS (MODIFICADOS)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 75),
                 child: GridView.count(
-                  shrinkWrap: true, // ajusta altura do GridView para caber no Column
-                  physics: const NeverScrollableScrollPhysics(), // remove rolagem do Grid
-                  crossAxisCount: 3, // 3 botões por linha
-                  mainAxisSpacing: 18,
-                  crossAxisSpacing: 18,
-                  childAspectRatio: 1, // botões quadrados
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 32,
+                  crossAxisSpacing: 32,
+                  childAspectRatio: 1,
                   children: [
-                    _buildLargeButton('Notificações', Icons.notifications, () {
-                      Navigator.pushNamed(context, '/notificacoes');
-                    }),
-                    _buildLargeButton('Perfil', Icons.account_circle, () {
-                      Navigator.pushNamed(context, '/perfil');
+                    _buildLargeButton('Passeio', Icons.directions_walk, () {
+                      Navigator.pushNamed(context, '/passeios_tutor');
                     }),
                     _buildLargeButton('Feedback', Icons.location_on, () {
-                      Navigator.pushNamed(context, '/feedback');
+                      Navigator.pushNamed(context, '/feedback_tutor');
                     }),
-                    _buildLargeButton('Meus Pets', Icons.pets, () {
-                      Navigator.pushNamed(context, '/meus_pets');
+                    _buildLargeButton('histórico', Icons.history, () {
+                      Navigator.pushNamed(context, '/historico_tutor');
                     }),
-                    _buildLargeButton('Passeio', Icons.directions_walk, () {
-                      Navigator.pushNamed(context, '/passeios');
+                    _buildLargeButton('Notificações', Icons.notifications, () {
+                      Navigator.pushNamed(context, '/notificacoes_tutor');
                     }),
-                    _buildLargeButton('Histórico', Icons.history, () {
-                      Navigator.pushNamed(context, '/historico');
+                    _buildLargeButton('Meus Pets',  Icons.pets , () {
+                      Navigator.pushNamed(context, '/perfil_pet');
+                    }),
+                    _buildLargeButton('Perfil', Icons.account_circle, () {
+                      Navigator.pushNamed(context, '/perfil_tutor');
                     }),
                   ],
                 ),
@@ -173,7 +172,7 @@ class HomeTutorScreen extends StatelessWidget {
                                   'Nome do dogwalker',
                                   style: GoogleFonts.inter(
                                     fontSize: 14,
-                                    color: const Color(0xFF0F5100),
+                                    color: Color(0xFF0F5100),
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -191,7 +190,7 @@ class HomeTutorScreen extends StatelessWidget {
                           ),
                           ElevatedButton(
                             onPressed: () {
-                              Navigator.pushNamed(context, '/perfil_dw');
+                              Navigator.pushNamed(context, '/perfildw_tutor');
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF0F5100),
@@ -222,25 +221,26 @@ class HomeTutorScreen extends StatelessWidget {
     );
   }
 
+  // BOTÕES COM TAMANHO REDUZIDO
   Widget _buildLargeButton(String label, IconData icon, VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(16),
       child: Container(
         decoration: BoxDecoration(
           color: const Color(0xFFFF9500),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: Colors.white, size: 50),
-            const SizedBox(height: 8),
+            Icon(icon, color: Colors.white, size: 40), // ícone menor
+            const SizedBox(height: 6),
             Text(
               label,
               textAlign: TextAlign.center,
               style: GoogleFonts.inter(
-                fontSize: 16,
+                fontSize: 14, // texto menor
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
