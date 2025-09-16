@@ -42,10 +42,10 @@ class _FeedbackTutorScreenState extends State<FeedbackTutorScreen> {
         backgroundColor: const Color(0xFFFF9500),
         title: Text(
           'Feedback',
-          style: GoogleFonts.poppins(
-            color: Colors.white,
-            fontSize: 26,
-            fontWeight: FontWeight.w600,
+            style: GoogleFonts.interTight(
+              color: const Color(0xFFFFFBE4),
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: true,
@@ -71,7 +71,7 @@ class _FeedbackTutorScreenState extends State<FeedbackTutorScreen> {
                     children: [
                       Text(
                         " ${passeio["data"]}",
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.interTight(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,

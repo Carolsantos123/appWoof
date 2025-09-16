@@ -10,7 +10,6 @@ import 'package:woof/pages/dw/experiencias.dart';
 import 'package:woof/pages/dw/financias.dart';
 import 'package:woof/pages/dw/historico.dart';
 import 'package:woof/pages/dw/home.dart';
-// import 'package:woof/pages/dw/historico_dia.dart';
 import 'package:woof/pages/dw/notificacoes.dart';
 import 'package:woof/pages/dw/perfil_dw.dart';
 import 'package:woof/pages/dw/perfildw_home.dart';
@@ -21,11 +20,14 @@ import 'package:woof/pages/tutor/cadastro_tutor.dart';
 import 'package:woof/pages/tutor/cd_perfil.dart';
 import 'package:woof/pages/tutor/editar_perfil.dart';
 import 'package:woof/pages/tutor/feedback_tutor.dart';
+import 'package:woof/pages/tutor/historico_tutor.dart';
+import 'package:woof/pages/tutor/hitoricodia_tutor.dart';
 import 'package:woof/pages/tutor/home.dart';
 import 'package:woof/pages/tutor/notifica%C3%A7%C3%A3o_tutor.dart';
 import 'package:woof/pages/tutor/pefil_pet.dart';
 import 'package:woof/pages/tutor/perfil_dw.dart';
 import 'package:woof/pages/tutor/perfil_tutor.dart';
+import 'package:woof/pages/tutor/solicitacao_tutor.dart';
 
 void main() async {
   runApp(MaterialApp(
@@ -66,7 +68,9 @@ void main() async {
       '/notificacoes_tutor': (context) => Notificacoes_tutorScreen(),
       '/perfil_pet': (context) => PerfilPetScreen(),
       '/feedback_tutor': (context) => FeedbackTutorScreen(),
-      // '/historico_tutor': (context) => HistoricoTutorScreen (),
+      '/historico_tutor': (context) => CalendarioHistorico(),
+      '/passeios_tutor': (context) => SolicitarPasseioScreen(),
+
     },
   ));
 }

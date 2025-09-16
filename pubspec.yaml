@@ -11,13 +11,20 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  flutter_rating_bar: ^4.0.1 # ou a versão mais recente
-  firebase_core: ^3.2.0 # Ajustei a versão para ser compatível com as mais recentes do Flutter
+  flutter_rating_bar: ^4.0.1
   google_fonts: ^6.3.0
+  table_calendar: ^3.0.8
   flutter_localizations:
     sdk: flutter
   intl: ^0.20.2
 
+  # 🔑 Firebase
+  firebase_core: ^3.2.0
+  firebase_auth: ^5.1.4
+  cloud_firestore: ^5.6.12
+
+  # 📦 Gerenciamento de estado (GetX)
+  get: ^4.7.2
 
 dev_dependencies:
   flutter_test:
