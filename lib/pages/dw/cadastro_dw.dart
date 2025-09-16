@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:woof/controllers/walkerController.dart';
+import 'package:woof/models/walkerModel.dart';
 
 class CadastroDwPage extends StatefulWidget {
   const CadastroDwPage({super.key});
@@ -26,6 +30,9 @@ class _CadastroDwPageState extends State<CadastroDwPage> {
 
   final _formKey = GlobalKey<FormState>();
   bool _obscurePass = true;
+  bool _isLoading = false;
+
+  final WalkerController _walkerController = Get.put(WalkerController());
 
   @override
   void dispose() {
@@ -49,7 +56,7 @@ class _CadastroDwPageState extends State<CadastroDwPage> {
       isDense: true,
       hintText: label,
       filled: true,
-      fillColor: const Color(0x8DF4C7B6), // mesmo tom translúcido do FF
+      fillColor: const Color(0x8DF4C7B6),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(30),
         borderSide: BorderSide.none,
@@ -79,6 +86,50 @@ class _CadastroDwPageState extends State<CadastroDwPage> {
     );
   }
 
+  Future<void> _cadastrarWalker() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      // final user = FirebaseAuth.instance.currentUser;
+      // if (user == null) throw Exception("Usuário não logado");
+
+      final walkerId = FirebaseFirestore.instance.collection('walkers').doc().id;
+
+      final walker = Walker(
+        walkerID: walkerId,
+        addExperienciasAnteriores: '',
+        bairro: _bairroCtrl.text,
+        cep: _cepCtrl.text,
+        complemento: _complCtrl.text.isEmpty ? null : _complCtrl.text,
+        cpf: _cpfCtrl.text,
+        dataNascimento: '',
+        disponibilidades: '',
+        email: _emailCtrl.text,
+        estado: _estadoCtrl.text,
+        extra: '',
+        foto: '',
+        localizacaoPasseios: '',
+        nomeCompleto: _nomeCtrl.text,
+        numero: int.tryParse(_numCtrl.text) ?? 0,
+        rua: _ruaCtrl.text,
+        senha: _senhaCtrl.text,
+        telefone: _telCtrl.text,
+        uidUser: "nulo",
+      );
+
+      await _walkerController.createWalker(walker);
+
+      Get.snackbar('Sucesso', 'DogWalker cadastrado com sucesso!');
+      Navigator.of(context).pushNamed('/perfil_dw');
+    } catch (e) {
+      Get.snackbar('Erro', e.toString());
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -106,7 +157,6 @@ class _CadastroDwPageState extends State<CadastroDwPage> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                // Imagem topo
                 Row(
                   children: [
                     Expanded(
@@ -188,15 +238,9 @@ class _CadastroDwPageState extends State<CadastroDwPage> {
                           keyboardType: TextInputType.number,
                         ),
                         const SizedBox(height: 20),
-                        _campo(
-                          label: 'Rua',
-                          controller: _ruaCtrl,
-                        ),
+                        _campo(label: 'Rua', controller: _ruaCtrl),
                         const SizedBox(height: 20),
-                        _campo(
-                          label: 'Bairro',
-                          controller: _bairroCtrl,
-                        ),
+                        _campo(label: 'Bairro', controller: _bairroCtrl),
                         const SizedBox(height: 20),
                         _campo(
                           label: 'Número',
@@ -204,15 +248,9 @@ class _CadastroDwPageState extends State<CadastroDwPage> {
                           keyboardType: TextInputType.number,
                         ),
                         const SizedBox(height: 20),
-                        _campo(
-                          label: 'Estado',
-                          controller: _estadoCtrl,
-                        ),
+                        _campo(label: 'Estado', controller: _estadoCtrl),
                         const SizedBox(height: 20),
-                        _campo(
-                          label: 'Complemento',
-                          controller: _complCtrl,
-                        ),
+                        _campo(label: 'Complemento', controller: _complCtrl),
                       ],
                     ),
                   ),
@@ -230,13 +268,13 @@ class _CadastroDwPageState extends State<CadastroDwPage> {
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         elevation: 0,
                       ),
-                      onPressed: () {
-                        Navigator.of(context).pushNamed('/perfil_dw');
-                      },
-                      child: const Text(
-                        'Cadastrar',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                      onPressed: _isLoading ? null : _cadastrarWalker,
+                      child: _isLoading
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text(
+                              'Cadastrar',
+                              style: TextStyle(color: Colors.white),
+                            ),
                     ),
                   ),
                 ),

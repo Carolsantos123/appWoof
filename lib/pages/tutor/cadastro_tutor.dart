@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:woof/controllers/clienteController.dart';
+import 'package:woof/models/clienteModel.dart';
+import 'package:woof/services/clienteService.dart';
 
 class Cadastro_tutorPage extends StatefulWidget {
   const Cadastro_tutorPage({super.key});
@@ -11,7 +17,7 @@ class Cadastro_tutorPage extends StatefulWidget {
 }
 
 class _Cadastro_tutorPageState extends State<Cadastro_tutorPage> {
-  // Controllers
+  // Controllers de formulário
   final _nomeCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
   final _senhaCtrl = TextEditingController();
@@ -26,6 +32,11 @@ class _Cadastro_tutorPageState extends State<Cadastro_tutorPage> {
 
   final _formKey = GlobalKey<FormState>();
   bool _obscurePass = true;
+  bool _isLoading = false;
+
+  // Controller e Service
+  final ClienteController _clienteController =
+      ClienteController(service: ClienteService());
 
   @override
   void dispose() {
@@ -49,7 +60,7 @@ class _Cadastro_tutorPageState extends State<Cadastro_tutorPage> {
       isDense: true,
       hintText: label,
       filled: true,
-      fillColor: const Color(0x8DF4C7B6), // mesmo tom translúcido do FF
+      fillColor: const Color(0x8DF4C7B6),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(30),
         borderSide: BorderSide.none,
@@ -79,6 +90,46 @@ class _Cadastro_tutorPageState extends State<Cadastro_tutorPage> {
     );
   }
 
+  Future<void> _cadastrarCliente() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) throw Exception("Usuário não logado");
+
+      final clienteId =
+          FirebaseFirestore.instance.collection('clientes').doc().id;
+
+      final cliente = Cliente(
+        clienteID: clienteId,
+        bairro: _bairroCtrl.text,
+        cep: _cepCtrl.text,
+        complemento: _complCtrl.text.isEmpty ? null : _complCtrl.text,
+        email: _emailCtrl.text,
+        estado: _estadoCtrl.text,
+        foto: '',
+        nomeCompleto: _nomeCtrl.text,
+        numero: int.tryParse(_numCtrl.text) ?? 0,
+        rua: _ruaCtrl.text,
+        senha: _senhaCtrl.text,
+        telefone: int.tryParse(_telCtrl.text) ?? 0,
+        uidUser: user.uid,
+        pets: [],
+      );
+
+      _clienteController.adicionarCliente(cliente);
+
+      Get.snackbar('Sucesso', 'Cliente cadastrado com sucesso!');
+      Navigator.of(context).pushNamed('/visor_perfiltutor');
+    } catch (e) {
+      Get.snackbar('Erro', e.toString());
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -89,7 +140,8 @@ class _Cadastro_tutorPageState extends State<Cadastro_tutorPage> {
           backgroundColor: const Color(0xFFFFF9E6),
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_rounded, color: Color(0xFF0F5100)),
+            icon: const Icon(Icons.arrow_back_ios_rounded,
+                color: Color(0xFF0F5100)),
             onPressed: () => Navigator.of(context).pop(),
           ),
           title: const Text(
@@ -141,7 +193,8 @@ class _Cadastro_tutorPageState extends State<Cadastro_tutorPage> {
                           keyboardType: TextInputType.emailAddress,
                           validator: (v) {
                             if (v == null || v.trim().isEmpty) return 'Informe o email';
-                            final ok = RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(v.trim());
+                            final ok =
+                                RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(v.trim());
                             return ok ? null : 'Email inválido';
                           },
                         ),
@@ -188,15 +241,9 @@ class _Cadastro_tutorPageState extends State<Cadastro_tutorPage> {
                           keyboardType: TextInputType.number,
                         ),
                         const SizedBox(height: 20),
-                        _campo(
-                          label: 'Rua',
-                          controller: _ruaCtrl,
-                        ),
+                        _campo(label: 'Rua', controller: _ruaCtrl),
                         const SizedBox(height: 20),
-                        _campo(
-                          label: 'Bairro',
-                          controller: _bairroCtrl,
-                        ),
+                        _campo(label: 'Bairro', controller: _bairroCtrl),
                         const SizedBox(height: 20),
                         _campo(
                           label: 'Número',
@@ -204,15 +251,9 @@ class _Cadastro_tutorPageState extends State<Cadastro_tutorPage> {
                           keyboardType: TextInputType.number,
                         ),
                         const SizedBox(height: 20),
-                        _campo(
-                          label: 'Estado',
-                          controller: _estadoCtrl,
-                        ),
+                        _campo(label: 'Estado', controller: _estadoCtrl),
                         const SizedBox(height: 20),
-                        _campo(
-                          label: 'Complemento',
-                          controller: _complCtrl,
-                        ),
+                        _campo(label: 'Complemento', controller: _complCtrl),
                       ],
                     ),
                   ),
@@ -230,13 +271,13 @@ class _Cadastro_tutorPageState extends State<Cadastro_tutorPage> {
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         elevation: 0,
                       ),
-                      onPressed: () {
-                        Navigator.of(context).pushNamed('/visor_perfiltutor');
-                      },
-                      child: const Text(
-                        'Cadastrar',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                      onPressed: _isLoading ? null : _cadastrarCliente,
+                      child: _isLoading
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text(
+                              'Cadastrar',
+                              style: TextStyle(color: Colors.white),
+                            ),
                     ),
                   ),
                 ),
