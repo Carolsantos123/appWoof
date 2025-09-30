@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,10 +16,10 @@ class CadastroDwPage extends StatefulWidget {
 }
 
 class _CadastroDwPageState extends State<CadastroDwPage> {
-  // Controllers
+  // Controllers para capturar os valores digitados nos campos
   final _nomeCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
-  final _senhaCtrl = TextEditingController();
+  final _senhaCtrl = TextEditingController(); // senha (só para FirebaseAuth)
   final _cpfCtrl = TextEditingController();
   final _telCtrl = TextEditingController();
   final _cepCtrl = TextEditingController();
@@ -28,14 +29,21 @@ class _CadastroDwPageState extends State<CadastroDwPage> {
   final _estadoCtrl = TextEditingController();
   final _complCtrl = TextEditingController();
 
+  // Chave para validar o formulário
   final _formKey = GlobalKey<FormState>();
+
+  // Controla visibilidade da senha
   bool _obscurePass = true;
+
+  // Controla estado de carregamento (para mostrar loading)
   bool _isLoading = false;
 
+  // Controller que faz a ponte com o Service (GetX)
   final WalkerController _walkerController = Get.put(WalkerController());
 
   @override
   void dispose() {
+    // Libera memória dos controllers quando sair da tela
     _nomeCtrl.dispose();
     _emailCtrl.dispose();
     _senhaCtrl.dispose();
@@ -50,6 +58,7 @@ class _CadastroDwPageState extends State<CadastroDwPage> {
     super.dispose();
   }
 
+  // Método para personalizar estilo dos campos de texto
   InputDecoration _dec(String label) {
     return InputDecoration(
       labelText: label,
@@ -64,6 +73,7 @@ class _CadastroDwPageState extends State<CadastroDwPage> {
     );
   }
 
+  // Widget reutilizável para criar campos de formulário
   Widget _campo({
     required String label,
     required TextEditingController controller,
@@ -75,28 +85,40 @@ class _CadastroDwPageState extends State<CadastroDwPage> {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
-      obscureText: obscure,
+      obscureText: obscure, // se for senha, esconde os caracteres
       decoration: _dec(label).copyWith(suffixIcon: suffixIcon),
       style: const TextStyle(
-        color: Color.fromARGB(255, 0, 0, 0),
+        color: Colors.black,
         fontSize: 18,
       ),
-      validator: validator,
+      validator: validator, // validações (ex: email válido, campo vazio, etc.)
       cursorColor: Colors.black87,
     );
   }
 
+  // Função que executa o fluxo de cadastro
   Future<void> _cadastrarWalker() async {
+    // Valida formulário antes de enviar
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
 
     try {
-      // final user = FirebaseAuth.instance.currentUser;
-      // if (user == null) throw Exception("Usuário não logado");
+      // 1. Criar usuário no FirebaseAuth (salva email e senha criptografada)
+      UserCredential cred =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _emailCtrl.text.trim(),
+        password: _senhaCtrl.text.trim(),
+      );
 
-      final walkerId = FirebaseFirestore.instance.collection('walkers').doc().id;
+      // 2. Pegar UID do usuário criado (identificador único)
+      final uid = cred.user!.uid;
 
+      // 3. Criar ID do documento do walker no Firestore
+      final walkerId =
+          FirebaseFirestore.instance.collection('walkers').doc().id;
+
+      // 4. Criar objeto Walker (sem senha em texto!)
       final walker = Walker(
         walkerID: walkerId,
         addExperienciasAnteriores: '',
@@ -114,18 +136,21 @@ class _CadastroDwPageState extends State<CadastroDwPage> {
         nomeCompleto: _nomeCtrl.text,
         numero: int.tryParse(_numCtrl.text) ?? 0,
         rua: _ruaCtrl.text,
-        senha: _senhaCtrl.text,
         telefone: _telCtrl.text,
-        uidUser: "nulo",
+        uidUser: uid, // vincula Walker ao usuário autenticado
       );
 
+      // 5. Salvar walker no Firestore via Controller
       await _walkerController.createWalker(walker);
 
-      Get.snackbar('Sucesso', 'DogWalker cadastrado com sucesso!');
+      // // 6. Exibir sucesso e ir para tela de perfil
+      // Get.snackbar('Sucesso', 'DogWalker cadastrado com sucesso!');
       Navigator.of(context).pushNamed('/perfil_dw');
     } catch (e) {
+      // Se algo der errado, exibe erro
       Get.snackbar('Erro', e.toString());
     } finally {
+      // Finaliza carregamento
       setState(() => _isLoading = false);
     }
   }
@@ -133,6 +158,7 @@ class _CadastroDwPageState extends State<CadastroDwPage> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      // Fecha o teclado ao tocar fora do campo
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         backgroundColor: const Color(0xFFFFF9E6),
@@ -140,7 +166,8 @@ class _CadastroDwPageState extends State<CadastroDwPage> {
           backgroundColor: const Color(0xFFFFF9E6),
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_rounded, color: Color(0xFF0F5100)),
+            icon: const Icon(Icons.arrow_back_ios_rounded,
+                color: Color(0xFF0F5100)),
             onPressed: () => Navigator.of(context).pop(),
           ),
           title: const Text(
@@ -157,6 +184,7 @@ class _CadastroDwPageState extends State<CadastroDwPage> {
           child: SingleChildScrollView(
             child: Column(
               children: [
+                // Imagem do topo
                 Row(
                   children: [
                     Expanded(
@@ -172,6 +200,7 @@ class _CadastroDwPageState extends State<CadastroDwPage> {
                     ),
                   ],
                 ),
+                // Formulário
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
                   child: Form(
@@ -181,8 +210,9 @@ class _CadastroDwPageState extends State<CadastroDwPage> {
                         _campo(
                           label: 'Nome completo',
                           controller: _nomeCtrl,
-                          validator: (v) =>
-                              (v == null || v.trim().isEmpty) ? 'Informe o nome' : null,
+                          validator: (v) => (v == null || v.trim().isEmpty)
+                              ? 'Informe o nome'
+                              : null,
                         ),
                         const SizedBox(height: 20),
                         _campo(
@@ -190,8 +220,11 @@ class _CadastroDwPageState extends State<CadastroDwPage> {
                           controller: _emailCtrl,
                           keyboardType: TextInputType.emailAddress,
                           validator: (v) {
-                            if (v == null || v.trim().isEmpty) return 'Informe o email';
-                            final ok = RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(v.trim());
+                            if (v == null || v.trim().isEmpty) {
+                              return 'Informe o email';
+                            }
+                            final ok = RegExp(r'^[^@]+@[^@]+\.[^@]+')
+                                .hasMatch(v.trim());
                             return ok ? null : 'Email inválido';
                           },
                         ),
@@ -201,13 +234,17 @@ class _CadastroDwPageState extends State<CadastroDwPage> {
                           controller: _senhaCtrl,
                           obscure: _obscurePass,
                           suffixIcon: IconButton(
-                            onPressed: () => setState(() => _obscurePass = !_obscurePass),
+                            onPressed: () => setState(
+                                () => _obscurePass = !_obscurePass),
                             icon: Icon(
-                              _obscurePass ? Icons.visibility : Icons.visibility_off,
+                              _obscurePass
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
                             ),
                           ),
-                          validator: (v) =>
-                              (v == null || v.length < 6) ? 'Mínimo 6 caracteres' : null,
+                          validator: (v) => (v == null || v.length < 6)
+                              ? 'Mínimo 6 caracteres'
+                              : null,
                         ),
                         const SizedBox(height: 20),
                         _campo(
@@ -222,10 +259,10 @@ class _CadastroDwPageState extends State<CadastroDwPage> {
                           keyboardType: TextInputType.phone,
                         ),
                         const SizedBox(height: 24),
-                        Text(
+                        const Text(
                           'Endereço',
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Color(0xFF074800),
                             fontSize: 30,
                             fontWeight: FontWeight.w500,
@@ -255,6 +292,7 @@ class _CadastroDwPageState extends State<CadastroDwPage> {
                     ),
                   ),
                 ),
+                // Botão de cadastro
                 Padding(
                   padding: const EdgeInsets.only(bottom: 24),
                   child: SizedBox(
@@ -270,7 +308,9 @@ class _CadastroDwPageState extends State<CadastroDwPage> {
                       ),
                       onPressed: _isLoading ? null : _cadastrarWalker,
                       child: _isLoading
-                          ? const CircularProgressIndicator(color: Colors.white)
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                            )
                           : const Text(
                               'Cadastrar',
                               style: TextStyle(color: Colors.white),

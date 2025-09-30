@@ -22,6 +22,10 @@ dependencies:
   firebase_core: ^3.2.0
   firebase_auth: ^5.1.4
   cloud_firestore: ^5.6.12
+  firebase_storage: ^12.3.4   # ⬅️ ADICIONE
+
+  # 📷 Seleção de imagens
+  image_picker: ^1.1.2        # ⬅️ ADICIONE
 
   # 📦 Gerenciamento de estado (GetX)
   get: ^4.7.2

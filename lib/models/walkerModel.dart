@@ -15,7 +15,6 @@ class Walker {
   String nomeCompleto;
   int numero;
   String rua;
-  String senha;
   String telefone;
   String uidUser; // 🔑 ligação com Firebase Auth
 
@@ -36,7 +35,6 @@ class Walker {
     required this.nomeCompleto,
     required this.numero,
     required this.rua,
-    required this.senha,
     required this.telefone,
     required this.uidUser, // 🔑 novo campo
   });
@@ -58,7 +56,6 @@ class Walker {
       'nome_completo': nomeCompleto,
       'numero': numero,
       'rua': rua,
-      'senha': senha,
       'telefone': telefone,
       'uid_user': uidUser, // 🔑 salvar
     };
@@ -88,7 +85,6 @@ class Walker {
       nomeCompleto: map['nome_completo'] ?? '',
       numero: map['numero'] ?? 0,
       rua: map['rua'] ?? '',
-      senha: map['senha'] ?? '',
       telefone: map['telefone'] ?? '',
       uidUser: map['uid_user'] ?? '', // 🔑 carregar
     );

@@ -1,5 +1,7 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:woof/firebase_options.dart';
 import 'package:woof/pages/dw/agenda.dart';
 import 'package:woof/pages/dw/avaliacoes.dart';
 import 'package:woof/pages/dw/cadastro_dw.dart';
@@ -30,6 +32,10 @@ import 'package:woof/pages/tutor/perfil_tutor.dart';
 import 'package:woof/pages/tutor/solicitacao_tutor.dart';
 
 void main() async {
+   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MaterialApp(
     localizationsDelegates: [
       GlobalMaterialLocalizations.delegate,
@@ -59,7 +65,6 @@ void main() async {
       '/historico_calendario': (context) => CalendarioHistoricoWidget(),
       '/editar_perfildw': (context) => EditarPerfildwScreen(),
       '/cadastro_tutor': (context) => Cadastro_tutorPage(),
-      '/cadastro_pet': (context) => CadastroPetScreen(),
       '/perfil_tutor': (context) => PerfilTutorScreen(),
       '/editar_perfiltutor': (context) => EditarPerfilScreen(),
       '/visor_perfiltutor': (context) => PerfilTutorWidget(),
@@ -70,7 +75,6 @@ void main() async {
       '/feedback_tutor': (context) => FeedbackTutorScreen(),
       '/historico_tutor': (context) => CalendarioHistorico(),
       '/passeios_tutor': (context) => SolicitarPasseioScreen(),
-
-    },
+          },
   ));
 }

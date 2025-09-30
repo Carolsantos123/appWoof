@@ -12,12 +12,19 @@ class ClienteService {
         .toList();
   }
 
+  // ✅ Corrigido: agora usa o clienteID como ID do documento
   Future<void> adicionarCliente(Cliente cliente) async {
-    await _firestore.collection(collectionName).add(cliente.toMap());
+    await _firestore
+        .collection(collectionName)
+        .doc(cliente.clienteID) // ID fixo = uid do Auth
+        .set(cliente.toMap());
   }
 
   Future<void> atualizarCliente(Cliente cliente) async {
-    await _firestore.collection(collectionName).doc(cliente.clienteID).update(cliente.toMap());
+    await _firestore
+        .collection(collectionName)
+        .doc(cliente.clienteID)
+        .update(cliente.toMap());
   }
 
   Future<void> removerCliente(String clienteID) async {

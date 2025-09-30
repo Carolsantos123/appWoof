@@ -1,3 +1,8 @@
+// 📄 Cadastro Tutor Corrigido
+// Neste arquivo você encontra a tela de cadastro de Tutor (Cliente) corrigida
+// com fluxo completo de criação de usuário no FirebaseAuth e salvamento no Firestore
+// Sem uso de snackbar, indo direto para a tela de perfil após o sucesso.
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -90,18 +95,26 @@ class _Cadastro_tutorPageState extends State<Cadastro_tutorPage> {
     );
   }
 
+
   Future<void> _cadastrarCliente() async {
-    if (!_formKey.currentState!.validate()) return;
+    // if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
 
     try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null) throw Exception("Usuário não logado");
+      print("firebase");
+      // 1. Criar usuário no FirebaseAuth
+      UserCredential cred = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _emailCtrl.text.trim(),
+        password: _senhaCtrl.text.trim(),
+      );
 
-      final clienteId =
-          FirebaseFirestore.instance.collection('clientes').doc().id;
+      final uid = cred.user!.uid; // UID único do usuário
 
+      // 2. Criar ID para documento cliente (vamos usar o próprio uid do Auth)
+      final clienteId = uid;
+
+      // 3. Criar objeto Cliente
       final cliente = Cliente(
         clienteID: clienteId,
         bairro: _bairroCtrl.text,
@@ -113,15 +126,19 @@ class _Cadastro_tutorPageState extends State<Cadastro_tutorPage> {
         nomeCompleto: _nomeCtrl.text,
         numero: int.tryParse(_numCtrl.text) ?? 0,
         rua: _ruaCtrl.text,
-        senha: _senhaCtrl.text,
+        senha: '', // Não salvamos senha no Firestore
         telefone: int.tryParse(_telCtrl.text) ?? 0,
-        uidUser: user.uid,
+        uidUser: uid,
         pets: [],
       );
 
-      _clienteController.adicionarCliente(cliente);
+      // 4. Salvar cliente no Firestore
+      await _clienteController.service.adicionarCliente(cliente);
 
-      Get.snackbar('Sucesso', 'Cliente cadastrado com sucesso!');
+      // 5. Atualizar lista local
+      _clienteController.clientes.add(cliente);
+
+      // 6. Ir direto para tela de perfil (sem snackbar)
       Navigator.of(context).pushNamed('/visor_perfiltutor');
     } catch (e) {
       Get.snackbar('Erro', e.toString());
@@ -194,7 +211,7 @@ class _Cadastro_tutorPageState extends State<Cadastro_tutorPage> {
                           validator: (v) {
                             if (v == null || v.trim().isEmpty) return 'Informe o email';
                             final ok =
-                                RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(v.trim());
+                                RegExp(r'^[^@]+@[^@]+\\.[^@]+').hasMatch(v.trim());
                             return ok ? null : 'Email inválido';
                           },
                         ),

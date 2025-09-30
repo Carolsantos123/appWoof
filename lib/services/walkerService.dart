@@ -1,14 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:woof/models/walkerModel.dart';
 
-
+ 
 class WalkerService {
-  final CollectionReference walkersCollection =
+  final CollectionReference walkersCollection=
       FirebaseFirestore.instance.collection('walkers');
 
   // Criar novo walker
   Future<void> createWalker(Walker walker) async {
+    print(walkersCollection);
+    try {
     await walkersCollection.doc(walker.walkerID).set(walker.toMap());
+    } catch (e) {
+      print(e);
+    } 
   }
 
   // Buscar walker por ID
