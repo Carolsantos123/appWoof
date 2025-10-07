@@ -1,15 +1,11 @@
-// 📄 Cadastro Tutor Corrigido
-// Neste arquivo você encontra a tela de cadastro de Tutor (Cliente) corrigida
-// com fluxo completo de criação de usuário no FirebaseAuth e salvamento no Firestore
-// Sem uso de snackbar, indo direto para a tela de perfil após o sucesso.
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:woof/controllers/clienteController.dart';
 import 'package:woof/models/clienteModel.dart';
+import 'package:woof/pages/tutor/cd_perfil.dart';
 import 'package:woof/services/clienteService.dart';
+import 'perfil_tutor.dart'; // 👈 importa o perfil
 
 class Cadastro_tutorPage extends StatefulWidget {
   const Cadastro_tutorPage({super.key});
@@ -39,7 +35,6 @@ class _Cadastro_tutorPageState extends State<Cadastro_tutorPage> {
   bool _obscurePass = true;
   bool _isLoading = false;
 
-  // Controller e Service
   final ClienteController _clienteController =
       ClienteController(service: ClienteService());
 
@@ -95,26 +90,20 @@ class _Cadastro_tutorPageState extends State<Cadastro_tutorPage> {
     );
   }
 
-
   Future<void> _cadastrarCliente() async {
-    // if (!_formKey.currentState!.validate()) return;
-
     setState(() => _isLoading = true);
 
     try {
-      print("firebase");
       // 1. Criar usuário no FirebaseAuth
       UserCredential cred = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailCtrl.text.trim(),
         password: _senhaCtrl.text.trim(),
       );
 
-      final uid = cred.user!.uid; // UID único do usuário
+      final uid = cred.user!.uid;
+      final clienteId = uid; // vamos usar o próprio UID como ID do cliente
 
-      // 2. Criar ID para documento cliente (vamos usar o próprio uid do Auth)
-      final clienteId = uid;
-
-      // 3. Criar objeto Cliente
+      // 2. Criar objeto Cliente
       final cliente = Cliente(
         clienteID: clienteId,
         bairro: _bairroCtrl.text,
@@ -126,20 +115,24 @@ class _Cadastro_tutorPageState extends State<Cadastro_tutorPage> {
         nomeCompleto: _nomeCtrl.text,
         numero: int.tryParse(_numCtrl.text) ?? 0,
         rua: _ruaCtrl.text,
-        senha: '', // Não salvamos senha no Firestore
+        senha: '',
         telefone: int.tryParse(_telCtrl.text) ?? 0,
         uidUser: uid,
         pets: [],
       );
 
-      // 4. Salvar cliente no Firestore
+      // 3. Salvar cliente no Firestore
       await _clienteController.service.adicionarCliente(cliente);
 
-      // 5. Atualizar lista local
+      // 4. Atualizar lista local
       _clienteController.clientes.add(cliente);
 
-      // 6. Ir direto para tela de perfil (sem snackbar)
-      Navigator.of(context).pushNamed('/visor_perfiltutor');
+      // 5. Navegar para perfil passando o clienteId
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => PerfilTutorWidget(clienteDocId: clienteId),
+        ),
+      );
     } catch (e) {
       Get.snackbar('Erro', e.toString());
     } finally {
@@ -200,20 +193,12 @@ class _Cadastro_tutorPageState extends State<Cadastro_tutorPage> {
                         _campo(
                           label: 'Nome completo',
                           controller: _nomeCtrl,
-                          validator: (v) =>
-                              (v == null || v.trim().isEmpty) ? 'Informe o nome' : null,
                         ),
                         const SizedBox(height: 20),
                         _campo(
                           label: 'Email',
                           controller: _emailCtrl,
                           keyboardType: TextInputType.emailAddress,
-                          validator: (v) {
-                            if (v == null || v.trim().isEmpty) return 'Informe o email';
-                            final ok =
-                                RegExp(r'^[^@]+@[^@]+\\.[^@]+').hasMatch(v.trim());
-                            return ok ? null : 'Email inválido';
-                          },
                         ),
                         const SizedBox(height: 20),
                         _campo(
@@ -226,8 +211,6 @@ class _Cadastro_tutorPageState extends State<Cadastro_tutorPage> {
                               _obscurePass ? Icons.visibility : Icons.visibility_off,
                             ),
                           ),
-                          validator: (v) =>
-                              (v == null || v.length < 6) ? 'Mínimo 6 caracteres' : null,
                         ),
                         const SizedBox(height: 20),
                         _campo(

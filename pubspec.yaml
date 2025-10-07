@@ -29,6 +29,7 @@ dependencies:
 
   # 📦 Gerenciamento de estado (GetX)
   get: ^4.7.2
+  http: ^1.5.0
 
 dev_dependencies:
   flutter_test:
