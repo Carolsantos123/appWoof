@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:woof/services/weather_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -9,19 +11,50 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final WeatherService _weatherService = WeatherService();
+
+  String temperatura = '...';
+  String descricaoClima = 'carregando...';
+
+  @override
+  void initState() {
+    super.initState();
+    _carregarClima();
+  }
+
+  Future<void> _carregarClima() async {
+    final clima = await _weatherService.getClimaAracatuba();
+
+    setState(() {
+      if (clima != null) {
+        temperatura = clima['temp'] != null ? '${clima['temp']}°C' : '—';
+        descricaoClima = clima['description'] ?? '—';
+      } else {
+        temperatura = '—';
+        descricaoClima = '—';
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final dia = DateFormat('dd').format(now);
+    final mes = DateFormat('MM').format(now);
+
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBE4),
       body: SafeArea(
         child: Column(
           children: [
-            // HEADER
+            // =============================
+            //          HEADER
+            // =============================
             Container(
               width: double.infinity,
               height: 170,
               decoration: const BoxDecoration(
-                color: Color(0xFFB1F3A3),
+                color: Color.fromARGB(255, 177, 243, 163),
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(30),
                   bottomRight: Radius.circular(30),
@@ -32,26 +65,33 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Coluna da esquerda: Temperatura, Nublado e Ícone de Perfil
+                    // CLIMA + PERFIL
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Temperatura dinâmica
                         Text(
-                          '22º C',
+                          temperatura,
                           style: GoogleFonts.inter(
                             color: const Color(0xFF0F5100),
                             fontSize: 28,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
+
+                        // Descrição do clima
                         Text(
-                          'nublado',
+                          descricaoClima,
                           style: GoogleFonts.inter(
                             color: const Color(0xFF0F5100),
                             fontSize: 18,
                           ),
                         ),
+
                         const SizedBox(height: 8),
+
+                        // Ícone de perfil
                         IconButton(
                           icon: const Icon(
                             Icons.account_circle,
@@ -64,20 +104,21 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ),
-                    // Coluna da direita: Data
+
+                    // DATA (dd / mm)
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          '20',
+                          dia,
                           style: GoogleFonts.interTight(
                             color: const Color(0xFF0F5100),
                             fontSize: 45,
                           ),
                         ),
                         Text(
-                          '04',
+                          mes,
                           style: GoogleFonts.interTight(
                             color: const Color(0xFF0F5100),
                             fontSize: 45,
@@ -92,7 +133,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
             const SizedBox(height: 20),
 
-            // BOTÕES COM ROLAGEM VERTICAL E 2 COLUNAS
+            // =============================
+            //       BOTÕES
+            // =============================
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -103,20 +146,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     _buildButton(Icons.calendar_month_sharp, 'Agenda', onTap: () {
                       Navigator.pushNamed(context, '/agenda');
                     }),
-                    _buildButton(Icons.doorbell_rounded, 'Notificação', onTap: () {
-                      Navigator.pushNamed(context, '/notificacoes');
+                    _buildButton(Icons.person_add, 'Solicitações', onTap: () {
+                      Navigator.pushNamed(context, '/solicitacoes');
                     }),
                     _buildButton(Icons.star_half, 'Avaliação', onTap: () {
                       Navigator.pushNamed(context, '/avaliacoes');
                     }),
+                    _buildButton(Icons.location_on_sharp, 'Histórico', onTap: () {
+                      Navigator.pushNamed(context, '/historico_calendario');
+                    }),
                     _buildButton(Icons.grading_sharp, 'Finanças', onTap: () {
                       Navigator.pushNamed(context, '/financas');
                     }),
-                    _buildButton(Icons.person_add, 'Solicitações', onTap: () {
-                      Navigator.pushNamed(context, '/solicitacoes');
-                    }),
-                    _buildButton(Icons.location_on_sharp, 'Histórico', onTap: () {
-                      Navigator.pushNamed(context, '/historico_calendario');
+                    _buildButton(Icons.shopping_bag_rounded, 'Planos', onTap: () {
+                      Navigator.pushNamed(context, '/planos');
                     }),
                   ],
                 ),

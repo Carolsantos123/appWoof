@@ -15,17 +15,15 @@ import 'package:woof/pages/dw/home.dart';
 import 'package:woof/pages/dw/notificacoes.dart';
 import 'package:woof/pages/dw/perfil_dw.dart';
 import 'package:woof/pages/dw/perfildw_home.dart';
-import 'package:woof/pages/dw/solicita%C3%A7%C3%B5es.dart';
+import 'package:woof/pages/dw/solicitacoes.dart';
 import 'package:woof/pages/login.dart';
-import 'package:woof/pages/tutor/cadastro_pet.dart';
 import 'package:woof/pages/tutor/cadastro_tutor.dart';
 import 'package:woof/pages/tutor/cd_perfil.dart';
 import 'package:woof/pages/tutor/editar_perfil.dart';
 import 'package:woof/pages/tutor/feedback_tutor.dart';
 import 'package:woof/pages/tutor/historico_tutor.dart';
-import 'package:woof/pages/tutor/hitoricodia_tutor.dart';
 import 'package:woof/pages/tutor/home.dart';
-import 'package:woof/pages/tutor/notifica%C3%A7%C3%A3o_tutor.dart';
+import 'package:woof/pages/tutor/notificacao_tutor.dart';
 import 'package:woof/pages/tutor/pefil_pet.dart';
 import 'package:woof/pages/tutor/perfil_dw.dart';
 import 'package:woof/pages/tutor/perfil_tutor.dart';
@@ -61,8 +59,10 @@ void main() async {
       '/agenda': (context) => AgendaDWWidget(),
       '/avaliacoes': (context) => AvaliacoesScreen(),
       '/financas': (context) => FinancasScreen(),
-      '/notificacoes': (context) => notificacoesScreen(),
-      '/historico_calendario': (context) => CalendarioHistoricoWidget(),
+      '/planos': (context) => PlanosScreen(),
+      '/historico_calendario': (context) => HistoricodiaWidget(
+  selectedDate: DateTime.now(), // data padrão (ex: hoje)
+),
       '/editar_perfildw': (context) => EditarPerfildwScreen(),
       '/cadastro_tutor': (context) => Cadastro_tutorPage(),
       '/perfil_tutor': (context) => PerfilTutorScreen(),
@@ -70,10 +70,10 @@ void main() async {
       '/visor_perfiltutor': (context) => PerfilTutorWidget(),
       '/home_tutor': (context) => HomeTutorScreen(),
       '/perfildw_tutor': (context) => PerfilDw_tutorScreen(),
-      '/notificacoes_tutor': (context) => Notificacoes_tutorScreen(),
+      '/notificacoes_tutor': (context) => NotificacoesTutorScreen(),
       '/perfil_pet': (context) => PerfilPetScreen(),
       '/feedback_tutor': (context) => FeedbackTutorScreen(),
-      '/historico_tutor': (context) => CalendarioHistorico(),
+      '/historico_tutor': (context) => MeusPasseiosScreen(),
       '/passeios_tutor': (context) => SolicitarPasseioScreen(),
           },
   ));

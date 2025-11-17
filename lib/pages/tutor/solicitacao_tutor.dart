@@ -16,11 +16,10 @@ class SolicitarPasseioScreen extends StatefulWidget {
 }
 
 class _SolicitarPasseioScreenState extends State<SolicitarPasseioScreen> {
-  String? tipoPasseio; // fixo ou provisório
+  String? tipoPasseio;
   Set<DateTime> diasSelecionados = {};
   DateTime? diaProvisorio;
   Map<DateTime, TextEditingController> horariosControllers = {};
-
   DateTime focusedDay = DateTime.now();
 
   final _enderecoController = TextEditingController();
@@ -32,11 +31,20 @@ class _SolicitarPasseioScreenState extends State<SolicitarPasseioScreen> {
   Cliente? cliente;
   bool carregandoPets = true;
 
+  String? walkerID; // ID recebido via argumentos
+
   @override
   void initState() {
     super.initState();
     initializeDateFormatting('pt_BR', null);
     carregarPets();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Captura o walkerID enviado pela tela anterior
+    walkerID = ModalRoute.of(context)?.settings.arguments as String?;
   }
 
   Future<void> carregarPets() async {
@@ -83,61 +91,62 @@ class _SolicitarPasseioScreenState extends State<SolicitarPasseioScreen> {
   }
 
   Future<void> _salvarPasseio() async {
-  if (cliente == null || petSelecionado == null || duracaoSelecionada == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Preencha todos os campos obrigatórios")));
-    return;
+    if (cliente == null || petSelecionado == null || duracaoSelecionada == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Preencha todos os campos obrigatórios")));
+      return;
+    }
+
+    List<String> dias = [];
+    List<String> horarios = [];
+
+    if (tipoPasseio == "fixo") {
+      dias = diasSelecionados.map((d) => "${d.day}/${d.month}/${d.year}").toList();
+      horarios = diasSelecionados.map((d) => horariosControllers[d]?.text ?? "").toList();
+    } else if (tipoPasseio == "provisorio" && diaProvisorio != null) {
+      dias = ["${diaProvisorio!.day}/${diaProvisorio!.month}/${diaProvisorio!.year}"];
+      horarios = [horariosControllers[diaProvisorio!]?.text ?? ""];
+    }
+
+    final petEscolhido = cliente!.pets.firstWhere((p) => p.nomePet == petSelecionado);
+
+    final passeio = Passeio(
+      passeioID: DateTime.now().millisecondsSinceEpoch.toString(),
+      nomePet: petSelecionado!,
+      bairro: cliente!.bairro,
+      cep: cliente!.cep,
+      data: dias.join(", "),
+      diasPasseio: dias,
+      estado: cliente!.estado,
+      extra: _observacoesController.text,
+      horario: DateTime.now(),
+      horariosPasseios: horarios,
+      idCliente: cliente!.clienteID,
+      idPet: petEscolhido.petID,
+      idWalker: walkerID ?? '', // agora vincula o walker, se houver
+      numero: cliente!.numero,
+      rua: cliente!.rua,
+      servicos: '',
+      tempoPasseio: duracaoSelecionada!,
+      tipoPasseio: tipoPasseio!,
+      concluido: false,
+    );
+
+    try {
+      await FirebaseFirestore.instance
+          .collection('passeios')
+          .doc(passeio.passeioID)
+          .set(passeio.toMap());
+
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Passeio solicitado com sucesso!")));
+      Navigator.pop(context);
+    } catch (e) {
+      debugPrint("Erro ao salvar passeio: $e");
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("Erro ao solicitar passeio")));
+    }
   }
-
-  List<String> dias = [];
-  List<String> horarios = [];
-
-  if (tipoPasseio == "fixo") {
-    dias = diasSelecionados.map((d) => "${d.day}/${d.month}/${d.year}").toList();
-    horarios = diasSelecionados.map((d) => horariosControllers[d]?.text ?? "").toList();
-  } else if (tipoPasseio == "provisorio" && diaProvisorio != null) {
-    dias = ["${diaProvisorio!.day}/${diaProvisorio!.month}/${diaProvisorio!.year}"];
-    horarios = [horariosControllers[diaProvisorio!]?.text ?? ""];
-  }
-
-  final petEscolhido = cliente!.pets.firstWhere((p) => p.nomePet == petSelecionado);
-
-  final passeio = Passeio(
-    passeioID: DateTime.now().millisecondsSinceEpoch.toString(),
-    nomePet: petSelecionado!,
-    bairro: cliente!.bairro,
-    cep: cliente!.cep,
-    data: dias.join(", "),
-    diasPasseio: dias,
-    estado: cliente!.estado,
-    extra: '', // removido uso de cliente.extra
-    horario: DateTime.now(),
-    horariosPasseios: horarios,
-    idCliente: cliente!.clienteID,
-    idPet: petEscolhido.petID,
-    idWalker: '', // opcional, selecionar walker depois
-    numero: cliente!.numero,
-    rua: cliente!.rua,
-    servicos: '', // se houver serviço específico
-    tempoPasseio: duracaoSelecionada!,
-    tipoPasseio: tipoPasseio!,
-  );
-
-  try {
-    await FirebaseFirestore.instance
-        .collection('passeios')
-        .doc(passeio.passeioID)
-        .set(passeio.toMap());
-
-    ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Passeio solicitado com sucesso!")));
-    Navigator.pop(context);
-  } catch (e) {
-    debugPrint("Erro ao salvar passeio: $e");
-    ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text("Erro ao solicitar passeio")));
-  }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -152,7 +161,7 @@ class _SolicitarPasseioScreenState extends State<SolicitarPasseioScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFFFF9E6),
       appBar: AppBar(
-        title: Text("Passeio",
+        title: Text("Solicitar Passeio",
             style: GoogleFonts.poppins(
                 fontWeight: FontWeight.bold, color: Colors.green.shade900)),
         centerTitle: true,
@@ -166,6 +175,18 @@ class _SolicitarPasseioScreenState extends State<SolicitarPasseioScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  if (walkerID != null)
+                    Center(
+                      child: Text(
+                        "Solicitando passeio com um DogWalker selecionado 🐾",
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          color: Colors.orange.shade700,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
                     decoration: campoLaranja.copyWith(
                         labelText: "Selecione o pet que irá passear"),

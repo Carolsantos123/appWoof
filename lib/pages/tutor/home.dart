@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:woof/models/walkerModel.dart';
 import 'package:intl/intl.dart';
+import 'package:woof/pages/tutor/pefil_pet.dart';
 import 'package:woof/services/weather_service.dart';
 
 
@@ -171,7 +172,12 @@ class _HomeTutorScreenState extends State<HomeTutorScreen> {
                     _buildLargeButton('Feedback', Icons.location_on, () { Navigator.pushNamed(context, '/feedback_tutor'); }),
                     _buildLargeButton('Histórico', Icons.history, () { Navigator.pushNamed(context, '/historico_tutor'); }),
                     _buildLargeButton('Notificações', Icons.notifications, () { Navigator.pushNamed(context, '/notificacoes_tutor'); }),
-                    _buildLargeButton('Meus Pets', Icons.pets, () { Navigator.pushNamed(context, '/perfil_pet'); }),
+                    _buildLargeButton('Meus Pets', Icons.pets, () { 
+                      
+                          Navigator.of(context).push(
+                           MaterialPageRoute(builder: (_)=> PerfilPetScreen())
+                          );
+                     }),
                     _buildLargeButton('Perfil', Icons.account_circle, () { Navigator.pushNamed(context, '/perfil_tutor'); }),
                   ],
                 ),

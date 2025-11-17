@@ -5,10 +5,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'cadastro_pet.dart';
 
 class PerfilTutorWidget extends StatefulWidget {
-  final String? clienteDocId; // 👈 recebe do cadastro
+  final String? clienteDocId; // ID recebido do cadastro
 
   const PerfilTutorWidget({super.key, this.clienteDocId});
 
@@ -33,6 +32,7 @@ class _PerfilTutorWidgetState extends State<PerfilTutorWidget> {
     _checkLoginAndLoadData();
   }
 
+  // 🔐 Verifica login e carrega dados
   Future<void> _checkLoginAndLoadData() async {
     _currentUser = FirebaseAuth.instance.currentUser;
 
@@ -41,16 +41,15 @@ class _PerfilTutorWidgetState extends State<PerfilTutorWidget> {
       return;
     }
 
-    // ✅ Se já veio o ID do cadastro, usa ele
     if (widget.clienteDocId != null) {
       _clienteDocId = widget.clienteDocId;
       await _loadTutorDataById(_clienteDocId!);
     } else {
-      // Caso contrário, busca pelo uid_user
       await _loadTutorDataByUid(_currentUser!.uid);
     }
   }
 
+  // 🔍 Busca dados do tutor pelo UID
   Future<void> _loadTutorDataByUid(String uid) async {
     final query = await FirebaseFirestore.instance
         .collection('clientes')
@@ -68,6 +67,7 @@ class _PerfilTutorWidgetState extends State<PerfilTutorWidget> {
     }
   }
 
+  // 🔍 Busca dados do tutor pelo ID do documento
   Future<void> _loadTutorDataById(String docId) async {
     final doc =
         await FirebaseFirestore.instance.collection('clientes').doc(docId).get();
@@ -81,6 +81,7 @@ class _PerfilTutorWidgetState extends State<PerfilTutorWidget> {
     }
   }
 
+  // 📸 Selecionar imagem
   Future<void> _pickImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
@@ -91,6 +92,7 @@ class _PerfilTutorWidgetState extends State<PerfilTutorWidget> {
     }
   }
 
+  // ☁️ Enviar imagem para o Firebase Storage
   Future<void> _uploadImage() async {
     if (_imageFile == null || _clienteDocId == null) return;
 
@@ -138,7 +140,7 @@ class _PerfilTutorWidgetState extends State<PerfilTutorWidget> {
                 ),
                 const SizedBox(height: 20),
 
-                // Foto
+                // 🖼 Foto de perfil
                 Container(
                   width: 150,
                   height: 150,
@@ -156,7 +158,7 @@ class _PerfilTutorWidgetState extends State<PerfilTutorWidget> {
                 ),
                 const SizedBox(height: 10),
 
-                // Botão adicionar foto
+                // 📸 Botão adicionar foto
                 SizedBox(
                   width: 120,
                   height: 40,
@@ -184,7 +186,7 @@ class _PerfilTutorWidgetState extends State<PerfilTutorWidget> {
                 ),
                 const SizedBox(height: 20),
 
-                // Nome do tutor
+                // 🧍‍♂️ Nome do tutor
                 Text(
                   _nomeTutor ?? "Tutor",
                   style: const TextStyle(
@@ -195,7 +197,7 @@ class _PerfilTutorWidgetState extends State<PerfilTutorWidget> {
                 ),
                 const SizedBox(height: 20),
 
-                // Botão cadastrar pet
+                // 🐶 Botão cadastrar pet
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Container(
@@ -219,13 +221,10 @@ class _PerfilTutorWidgetState extends State<PerfilTutorWidget> {
                         IconButton(
                           onPressed: () {
                             if (_clienteDocId != null) {
-                              Navigator.push(
+                              Navigator.pushNamed(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (_) => CadastroPetScreen(
-                                    clienteId: _clienteDocId!,
-                                  ),
-                                ),
+                                '/perfil_pet',
+                                arguments: {'clienteId': _clienteDocId},
                               );
                             }
                           },
@@ -240,6 +239,7 @@ class _PerfilTutorWidgetState extends State<PerfilTutorWidget> {
                 ),
                 const SizedBox(height: 20),
 
+                // 🟢 Botão iniciar passeios
                 ElevatedButton(
                   onPressed: () =>
                       Navigator.of(context).pushNamed('/home_tutor'),

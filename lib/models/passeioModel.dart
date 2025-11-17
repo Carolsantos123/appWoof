@@ -4,11 +4,11 @@ class Passeio {
   String bairro;
   String cep;
   String data;
-  List<String> diasPasseio;       // array de dias
+  List<String> diasPasseio;
   String estado;
   String extra;
-  DateTime horario;               // timestamp
-  List<String> horariosPasseios;  // array de horários
+  DateTime horario;
+  List<String> horariosPasseios;
   String idCliente;
   String idPet;
   String idWalker;
@@ -17,6 +17,7 @@ class Passeio {
   String servicos;
   String tempoPasseio;
   String tipoPasseio;
+  bool concluido; // ✅ novo campo
 
   Passeio({
     required this.passeioID,
@@ -37,9 +38,9 @@ class Passeio {
     required this.servicos,
     required this.tempoPasseio,
     required this.tipoPasseio,
+    required this.concluido, // ✅ obrigatório
   });
 
-  // Converte para Map para salvar no Firebase
   Map<String, dynamic> toMap() {
     return {
       'passeioID': passeioID,
@@ -60,10 +61,10 @@ class Passeio {
       'servicos': servicos,
       'tempo_passeio': tempoPasseio,
       'tipo_passeio': tipoPasseio,
+      'concluido': concluido, // ✅ salvar no Firebase
     };
   }
 
-  // Converte Map do Firebase para objeto Passeio
   factory Passeio.fromMap(Map<String, dynamic> map, String id) {
     return Passeio(
       passeioID: id,
@@ -90,6 +91,7 @@ class Passeio {
       servicos: map['servicos'] ?? '',
       tempoPasseio: map['tempo_passeio'] ?? '',
       tipoPasseio: map['tipo_passeio'] ?? '',
+      concluido: map['concluido'] ?? false, // ✅ padrão: false
     );
   }
 }

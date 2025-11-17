@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:woof/models/feedbackModel.dart';
 
 class AvaliacoesScreen extends StatefulWidget {
   const AvaliacoesScreen({super.key});
@@ -10,18 +13,44 @@ class AvaliacoesScreen extends StatefulWidget {
 }
 
 class _AvaliacoesScreenState extends State<AvaliacoesScreen> {
-  // A cor de fundo da tela
   final Color backgroundColor = const Color(0xFFFFFBE4);
-  // A cor principal usada para textos e ícones
   final Color primaryColor = const Color(0xFF074800);
-  // A cor do fundo da AppBar
   final Color appBarColor = const Color.fromARGB(255, 177, 243, 163);
-  // A cor de fundo dos cards de feedback
   final Color feedbackCardColor = const Color(0xFFFFEFB5);
-  // A cor de destaque para o texto e ícones
   final Color highlightColor = const Color(0xFF0F5100);
 
-  double _rating = 4.0; // Valor inicial da avaliação
+  double _mediaAvaliacoes = 0.0;
+  List<FeedbackPasseio> _feedbacks = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _carregarFeedbacks();
+  }
+
+  Future<void> _carregarFeedbacks() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final snapshot = await FirebaseFirestore.instance
+        .collection('feedback')
+        .where('id_walker', isEqualTo: user.uid)
+        .get();
+
+    final feedbacks = snapshot.docs
+        .map((doc) => FeedbackPasseio.fromMap(doc.data(), doc.id))
+        .toList();
+
+    double soma = 0.0;
+    for (var f in feedbacks) {
+      soma += f.avaliacao;
+    }
+
+    setState(() {
+      _feedbacks = feedbacks;
+      _mediaAvaliacoes = feedbacks.isEmpty ? 0.0 : soma / feedbacks.length;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,142 +60,143 @@ class _AvaliacoesScreenState extends State<AvaliacoesScreen> {
         backgroundColor: appBarColor,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: primaryColor,
-          ),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+          icon: Icon(Icons.arrow_back, color: primaryColor),
+          onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
           'Avaliações',
           style: GoogleFonts.interTight(
             color: primaryColor,
-            fontSize: 28,
+            fontSize: 26,
             fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: true,
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 40.0),
-                child: Icon(
-                  Icons.star_half_rounded,
-                  color: highlightColor,
-                  size: 150,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                child: Text(
-                  'Suas Avaliações',
-                  style: GoogleFonts.inter(
-                    color: primaryColor,
-                    fontSize: 29,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              RatingBar.builder(
-                initialRating: _rating,
-                minRating: 1,
-                direction: Axis.horizontal,
-                allowHalfRating: true,
-                itemCount: 5,
-                itemSize: 30,
-                itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-                itemBuilder: (context, _) => const Icon(
-                  Icons.star_rounded,
-                  color: Colors.black,
-                ),
-                onRatingUpdate: (rating) {
-                  setState(() {
-                    _rating = rating;
-                  });
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Text(
-                  _rating.toStringAsFixed(1), // Exibe a avaliação com uma casa decimal
-                  style: GoogleFonts.inter(
-                    color: primaryColor,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(28, 40, 0, 5),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Feedbacks',
-                    style: GoogleFonts.inter(
-                      color: primaryColor,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
+        child: _feedbacks.isEmpty
+            ? const Center(
+                child: Text("Você ainda não recebeu avaliações."),
+              )
+            : SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 40.0),
+                      child: Icon(
+                        Icons.star_half_rounded,
+                        color: highlightColor,
+                        size: 150,
+                      ),
                     ),
-                  ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: Text(
+                        'Sua média de avaliações',
+                        style: GoogleFonts.inter(
+                          color: primaryColor,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    RatingBarIndicator(
+                      rating: _mediaAvaliacoes,
+                      itemBuilder: (context, _) => const Icon(
+                        Icons.star_rounded,
+                        color: Colors.amber,
+                      ),
+                      itemCount: 5,
+                      itemSize: 35,
+                    ),
+                    Text(
+                      _mediaAvaliacoes.toStringAsFixed(1),
+                      style: GoogleFonts.inter(
+                        color: primaryColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 28.0, bottom: 10),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Feedbacks recebidos',
+                          style: GoogleFonts.inter(
+                            color: primaryColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
+                    ..._feedbacks.map((fb) => _buildFeedbackCard(fb)).toList(),
+                    const SizedBox(height: 20),
+                  ],
                 ),
               ),
-              _buildFeedbackCard(
-                'Ótimo atendimento, super cuidadoso e atencioso, cumpre os horários e tem um carinho especial pelos cães',
-              ),
-              _buildFeedbackCard(
-                'Muito bom, meu cãozinho adorou!',
-              ),
-              _buildFeedbackCard(
-                'Serviço excelente, recomendo a todos.',
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
 
-  Widget _buildFeedbackCard(String text) {
+  Widget _buildFeedbackCard(FeedbackPasseio fb) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
       child: Container(
-        width: double.infinity,
         decoration: BoxDecoration(
           color: feedbackCardColor,
           borderRadius: const BorderRadius.only(
             bottomLeft: Radius.circular(20),
             bottomRight: Radius.circular(20),
-            topLeft: Radius.circular(0),
             topRight: Radius.circular(20),
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              Icon(
-                Icons.account_circle,
-                color: primaryColor,
-                size: 40,
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  text,
-                  style: GoogleFonts.inter(
-                    color: Colors.black,
-                    fontSize: 12,
-                    fontWeight: FontWeight.normal,
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Icon(Icons.account_circle, size: 40, color: Colors.black54),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RatingBarIndicator(
+                    rating: fb.avaliacao,
+                    itemBuilder: (context, _) => const Icon(
+                      Icons.star_rounded,
+                      color: Colors.amber,
+                    ),
+                    itemCount: 5,
+                    itemSize: 18,
                   ),
-                ),
+                  const SizedBox(height: 4),
+                  Text(
+                    fb.comentario.isNotEmpty
+                        ? fb.comentario
+                        : 'Sem comentário...',
+                    style: GoogleFonts.inter(
+                      color: Colors.black,
+                      fontSize: 13,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Text(
+                      fb.data,
+                      style: GoogleFonts.inter(
+                        fontSize: 11,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
