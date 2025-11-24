@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:woof/pages/tutor/pefil_pet.dart';
 import 'package:woof/services/weather_service.dart';
 
-
 class HomeTutorScreen extends StatefulWidget {
   const HomeTutorScreen({super.key});
 
@@ -157,28 +156,34 @@ class _HomeTutorScreenState extends State<HomeTutorScreen> {
 
               const SizedBox(height: 16),
 
-              // Botões principais
+              // ⭐⭐⭐ AQUI FOI A CORREÇÃO — SUBSTITUI O GRIDVIEW POR WRAP ⭐⭐⭐
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 75),
-                child: GridView.count(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: 3,
-                  mainAxisSpacing: 32,
-                  crossAxisSpacing: 32,
-                  childAspectRatio: 1,
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Wrap(
+                  spacing: 22,
+                  runSpacing: 22,
+                  alignment: WrapAlignment.center,
                   children: [
-                    _buildLargeButton('Passeio', Icons.directions_walk, () { Navigator.pushNamed(context, '/passeios_tutor'); }),
-                    _buildLargeButton('Feedback', Icons.location_on, () { Navigator.pushNamed(context, '/feedback_tutor'); }),
-                    _buildLargeButton('Histórico', Icons.history, () { Navigator.pushNamed(context, '/historico_tutor'); }),
-                    _buildLargeButton('Notificações', Icons.notifications, () { Navigator.pushNamed(context, '/notificacoes_tutor'); }),
-                    _buildLargeButton('Meus Pets', Icons.pets, () { 
-                      
-                          Navigator.of(context).push(
-                           MaterialPageRoute(builder: (_)=> PerfilPetScreen())
-                          );
-                     }),
-                    _buildLargeButton('Perfil', Icons.account_circle, () { Navigator.pushNamed(context, '/perfil_tutor'); }),
+                    _buildLargeButton('Passeio', Icons.directions_walk, () {
+                      Navigator.pushNamed(context, '/passeios_tutor');
+                    }),
+                    _buildLargeButton('Feedback', Icons.location_on, () {
+                      Navigator.pushNamed(context, '/feedback_tutor');
+                    }),
+                    _buildLargeButton('Histórico', Icons.history, () {
+                      Navigator.pushNamed(context, '/historico_tutor');
+                    }),
+                    _buildLargeButton('Notificações', Icons.notifications, () {
+                      Navigator.pushNamed(context, '/notificacoes_tutor');
+                    }),
+                    _buildLargeButton('Meus Pets', Icons.pets, () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => PerfilPetScreen()),
+                      );
+                    }),
+                    _buildLargeButton('Perfil', Icons.account_circle, () {
+                      Navigator.pushNamed(context, '/perfil_tutor');
+                    }),
                   ],
                 ),
               ),
@@ -223,9 +228,12 @@ class _HomeTutorScreenState extends State<HomeTutorScreen> {
                     ),
                     const SizedBox(height: 12),
                     carregando
-                        ? const Center(child: CircularProgressIndicator(color: Color(0xFF199700)))
+                        ? const Center(
+                            child: CircularProgressIndicator(
+                                color: Color(0xFF199700)))
                         : dogWalkersFiltrados.isEmpty
-                            ? const Center(child: Text("Nenhum dogwalker encontrado."))
+                            ? const Center(
+                                child: Text("Nenhum dogwalker encontrado."))
                             : ListView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
@@ -237,13 +245,15 @@ class _HomeTutorScreenState extends State<HomeTutorScreen> {
                                       color: const Color(0xFFFFF5C2),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
-                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 8),
                                     margin: const EdgeInsets.only(bottom: 8),
                                     child: Row(
                                       children: [
                                         const CircleAvatar(
                                           backgroundColor: Color(0xFFD9D9D9),
-                                          child: Icon(Icons.account_circle, color: Colors.white),
+                                          child: Icon(Icons.account_circle,
+                                              color: Colors.white),
                                         ),
                                         const SizedBox(width: 12),
                                         Expanded(
@@ -257,14 +267,25 @@ class _HomeTutorScreenState extends State<HomeTutorScreen> {
                                           ),
                                         ),
                                         ElevatedButton(
-                                          onPressed: () { Navigator.pushNamed(context, '/perfildw_tutor', arguments: dw.walkerID); },
+                                          onPressed: () {
+                                            Navigator.pushNamed(
+                                                context, '/perfildw_tutor',
+                                                arguments: dw.walkerID);
+                                          },
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor: const Color(0xFF0F5100),
-                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                            backgroundColor:
+                                                const Color(0xFF0F5100),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(8)),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 16, vertical: 8),
                                             elevation: 0,
                                           ),
-                                          child: Text('Ver', style: GoogleFonts.inter(fontSize: 14, color: Colors.white)),
+                                          child: Text('Ver',
+                                              style: GoogleFonts.inter(
+                                                  fontSize: 14,
+                                                  color: Colors.white)),
                                         ),
                                       ],
                                     ),
@@ -281,11 +302,14 @@ class _HomeTutorScreenState extends State<HomeTutorScreen> {
     );
   }
 
-  Widget _buildLargeButton(String label, IconData icon, VoidCallback onTap) {
+  Widget _buildLargeButton(
+      String label, IconData icon, VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Container(
+        width: 90, // Ajustado para parecer botão grande dentro do Wrap
+        height: 90,
         decoration: BoxDecoration(
           color: const Color(0xFFFF9500),
           borderRadius: BorderRadius.circular(16),
@@ -298,7 +322,10 @@ class _HomeTutorScreenState extends State<HomeTutorScreen> {
             Text(
               label,
               textAlign: TextAlign.center,
-              style: GoogleFonts.inter(fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold),
+              style: GoogleFonts.inter(
+                  fontSize: 14,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold),
             ),
           ],
         ),
